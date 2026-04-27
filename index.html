@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>1º GP Goiás Arara e-Bike | Apuração dos Tempos - v10</title>
+  <style>
+    :root{
+      --azul:#244f93; --azul-escuro:#173a75; --azul-claro:#8ea8d7;
+      --vermelho:#5b0918; --vinho:#320611; --amarelo:#f7d84a; --ouro:#f6c453;
+      --bg:#eef3fb; --card:#ffffff; --texto:#111827; --muted:#64748b; --borda:#d8dee8;
+      --ok:#0f766e; --danger:#b91c1c; --shadow:0 14px 34px rgba(15,23,42,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at top left,#fff 0,#eef3fb 36%,#e7edf8 100%);font-family:Arial,Helvetica,sans-serif;color:var(--texto)}
+    .wrap{max-width:1220px;margin:0 auto;padding:0 10px 28px}
+
+    header{background:#fff;border:1px solid #111;margin:2px auto 0;display:grid;grid-template-columns:390px 1fr;min-height:138px;overflow:hidden;box-shadow:var(--shadow)}
+    .logoBox{position:relative;background:linear-gradient(135deg,var(--vinho),#8e122a 60%,#28040d);display:flex;align-items:center;justify-content:center;padding:10px;border-right:1px solid #111;color:white;font-weight:900;text-align:center;letter-spacing:.03em;overflow:hidden}
+    .logoBox:before{content:"";position:absolute;inset:-35%;background:radial-gradient(circle,rgba(255,255,255,.17),transparent 35%);transform:rotate(-12deg)}
+    .logoBox img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block}.logoHint{position:relative;z-index:1;font-size:23px;line-height:1.15;text-shadow:0 2px 4px #000}
+    .titleBox{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 14px;background:linear-gradient(#fff,#f7f7f7)}
+    .titleBox:after{content:"AO VIVO";position:absolute;right:14px;top:12px;background:var(--danger);color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900;letter-spacing:.08em;box-shadow:0 6px 16px rgba(185,28,28,.25)}
+    h1{font-family:Georgia,'Times New Roman',serif;margin:0;font-size:44px;line-height:1.05;text-shadow:2px 2px 3px #999;color:#050505}.sub{font-family:Georgia,'Times New Roman',serif;font-size:36px;text-shadow:2px 2px 3px #999;margin-top:10px}
+
+    .ticker{display:flex;gap:10px;align-items:center;background:linear-gradient(90deg,var(--azul-escuro),var(--azul));color:#fff;border:1px solid #0f2d5e;border-top:0;padding:7px 10px;font-weight:800;overflow:hidden}.ticker span{white-space:nowrap}.ticker .latest{font-weight:700;color:#fff8c6;overflow:hidden;text-overflow:ellipsis}
+    .toolbar{background:rgba(255,255,255,.96);border:1px solid var(--borda);border-top:0;padding:10px;display:grid;grid-template-columns:1.4fr 1fr auto auto;gap:8px;align-items:center;position:sticky;top:0;z-index:4;box-shadow:0 8px 20px rgba(15,23,42,.08);backdrop-filter:blur(8px)}
+    input,select,button{font:inherit;border:1px solid #cbd5e1;border-radius:10px;padding:10px 11px;background:#fff}button{background:var(--azul);color:white;font-weight:800;cursor:pointer}button:hover{filter:brightness(1.08)}#atualizar{opacity:.4;transition:opacity .25s ease,filter .25s ease}#atualizar:hover,#atualizar:focus{opacity:1}
+    .meta{font-size:12px;color:var(--muted);text-align:right}.pill{display:inline-block;border-radius:999px;padding:3px 8px;background:#e2e8f0;color:#334155;font-size:12px;margin-left:6px}.liveDot{display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;margin-right:5px;box-shadow:0 0 0 5px rgba(34,197,94,.15)}.liveDot.offline{background:#ef4444;box-shadow:0 0 0 5px rgba(239,68,68,.15)}.liveDot.sync{background:#f59e0b;box-shadow:0 0 0 5px rgba(245,158,11,.15)}
+
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.card{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:12px;box-shadow:0 8px 18px rgba(15,23,42,.06)}.card b{font-size:23px;color:var(--azul);font-variant-numeric:tabular-nums}.card span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+    .podiumPanel{background:#fff;border:1px solid var(--borda);border-radius:16px;margin:10px 0;padding:12px;box-shadow:var(--shadow)}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-weight:900;color:var(--azul-escuro);text-transform:uppercase;letter-spacing:.04em}.sectionTitle small{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0}.podiumGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}.podiumCat{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;background:linear-gradient(#fff,#fbfdff)}.podiumCat h3{margin:0;padding:8px 10px;background:#edf4ff;color:#173a75;font-size:13px;text-align:center}.podiumRow{display:grid;grid-template-columns:36px 1fr 72px;gap:6px;align-items:center;padding:8px 10px;border-top:1px solid #edf2f7;font-size:13px}.podiumRow .medal{font-size:20px;text-align:center}.podiumRow .ath{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.podiumRow .tm{text-align:right;font-weight:900;font-variant-numeric:tabular-nums;color:#111827}.podiumEmpty{padding:12px;color:var(--muted);text-align:center;font-size:13px}
+
+    .tableWrap{background:#fff;border:1px solid var(--borda);overflow:hidden;border-radius:10px}.topHead,.catHead,.row{display:grid;grid-template-columns:64px 82px minmax(230px,1fr) 108px;align-items:center}.topHead{background:var(--azul);color:#fff;font-weight:900;font-size:16px}.topHead div{padding:3px 5px}.catHead{position:relative;z-index:1;background:var(--azul-claro);color:#fff;font-weight:900;font-size:14px;scroll-margin-top:72px}.catHead div{padding:4px 5px}.catHead .catTitle{text-align:center}.row{min-height:25px;border-bottom:1px solid var(--borda);font-size:13px;transition:background 1.2s ease}.row div{padding:3px 6px}.pos,.catPos{text-align:center}.tempo{text-align:right;font-variant-numeric:tabular-nums}.nome{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timed{font-weight:700}.untimed .tempo{background:repeating-linear-gradient(90deg,rgba(252,235,85,.55) 0 2px,transparent 2px 5px);color:transparent}.rank1{background:#fffdf2}.rank2{background:#f8fafc}.rank3{background:#fff7ed}.rank1 .pos,.rank1 .catPos,.rank1 .tempo{color:#92400e;font-weight:900}.rank2 .pos,.rank2 .catPos,.rank2 .tempo,.rank3 .pos,.rank3 .catPos,.rank3 .tempo{font-weight:900}.medalInline{margin-right:4px}.newEntry{animation:flashNew 8s ease-out 1}.newEntry .nome:after{content:"  🆕"}.empty{padding:28px;text-align:center;color:var(--muted)}
+    @keyframes flashNew{0%,20%{background:#fff3a3}55%{background:#dcfce7}100%{background:transparent}}
+    footer{font-size:12px;color:var(--muted);text-align:center;padding:12px}
+
+    @media(max-width:760px){.wrap{padding:0 4px 18px}header{grid-template-columns:1fr;min-height:unset}.logoBox{min-height:86px;border-right:0;border-bottom:1px solid #111}h1{font-size:28px}.sub{font-size:24px}.titleBox:after{right:8px;top:7px;font-size:10px;padding:4px 8px}.ticker{font-size:12px}.toolbar{grid-template-columns:1fr;position:static}.meta{text-align:left}.cards{grid-template-columns:repeat(2,1fr)}.card{padding:10px}.podiumPanel{border-radius:12px;padding:9px}.podiumGrid{grid-template-columns:1fr}.topHead,.catHead,.row{grid-template-columns:44px 56px minmax(128px,1fr) 76px;font-size:12px}.topHead{font-size:12px}.catHead{position:static;font-size:12px}.row{min-height:30px}.row div{padding:4px 4px}.tempo{font-size:11px}.nome{font-size:12px}}
+    @media print{.toolbar,.cards,.ticker,footer{display:none}.wrap{max-width:none;padding:0}body{background:white}header{break-inside:avoid}.row{min-height:18px}.podiumPanel{box-shadow:none}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logoBox"><img src="logo-evento.png" alt="Logo oficial do evento" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="logoHint" style="display:none">ESPAÇO DA<br>LOGO OFICIAL<br>DO EVENTO</div></div>
+    <div class="titleBox"><h1>1º GP Goiás Arara e-Bike</h1><div class="sub">Apuração dos Tempos</div></div>
+  </header>
+  <div class="ticker"><span>🏁 ÚLTIMA APURAÇÃO</span><span id="latestTicker" class="latest">Aguardando lançamento de tempos...</span></div>
+
+  <section class="toolbar" aria-label="Controles do painel">
+    <input id="busca" type="search" placeholder="Buscar atleta..." />
+    <select id="categoria"><option value="">Todas as categorias</option></select>
+    <button id="atualizar">Atualizar dados</button>
+    <div class="meta"><span id="status">Carregando...</span><br><span id="last"></span></div>
+  </section>
+
+  <section class="cards" aria-label="Resumo da apuração">
+    <div class="card"><b id="total">0</b><span>Atletas</span></div>
+    <div class="card"><b id="apurados">0</b><span>Com tempo apurado</span></div>
+    <div class="card"><b id="pendentes">0</b><span>Pendentes</span></div>
+    <div class="card"><b id="melhor">-</b><span>Melhor tempo geral</span></div>
+  </section>
+
+  <section class="podiumPanel" aria-label="Top 3 por categoria">
+    <div class="sectionTitle"><span>🏆 Top 3 por categoria</span><small id="podiumHint">Filtre uma categoria para vê-la em destaque.</small></div>
+    <div id="podium" class="podiumGrid"></div>
+  </section>
+
+  <main class="tableWrap">
+    <div class="topHead"><div>COLOCAÇÃO</div><div></div><div style="text-align:center">CATEGORIAS</div><div>TEMPOS</div></div>
+    <div id="tabela"></div>
+  </main>
+  <footer>Atualização automática da página a cada <b>30 segundos</b>.
+  <!-- Versão v10: cabeçalho de categoria sem sobreposição e listagem completa por categoria. Para trocar a planilha, altere <b>CONFIG.sheetId</b> e <b>CONFIG.gid</b> no código. Para inserir a logo, salve a imagem como <b>logo-evento.png</b> na mesma pasta deste HTML. -->
+  </footer>
+</div>
+<script>
+// ================================================================
+// CONFIGURAÇÃO DA PLANILHA
+// Para trocar a fonte dos dados, altere SOMENTE os dois campos abaixo:
+// 1) sheetId: código grande que aparece entre /d/ e /edit na URL do Google Sheets
+//    Ex.: https://docs.google.com/spreadsheets/d/SEU_SHEET_ID/edit#gid=SEU_GID
+// 2) gid: código numérico da aba, que aparece após gid= na URL
+//
+// Mantenha os nomes das colunas na planilha:
+// categoria | atleta | Tempo Seg
+// ================================================================
+/*
+  CONFIGURAÇÃO DA PLANILHA
+  Para trocar a fonte dos dados, altere somente sheetId e gid abaixo.
+  sheetId = código grande entre /d/ e /edit na URL do Google Sheets.
+  gid = número depois de gid= na URL da aba.
+*/
+const CONFIG = {
+  sheetId: '1LlOrye9m0Bv6RdMs87_JIMjaSyxV_WlApZdk-ZLgZVM',
+  gid: '602757766',
+  autoRefreshMs: 30000,
+  sentinelSemTempo: '12:00:00',
+  highlightMs: 9000,
+  storageKey: 'goiasRideTemposConhecidos_v24'
+};
+let dados = [];
+let newlyTimedKeys = new Set();
+let lastNewAthlete = null;
+let lastSuccessAt = null;
+let lastSuccessExact = '';
+let lastError = '';
+let isOnline = false;
+const $ = id => document.getElementById(id);
+function parseCSV(text){
+  const rows=[]; let row=[], cell='', q=false;
+  for(let i=0;i<text.length;i++){ const c=text[i], n=text[i+1];
+    if(c==='"' && q && n==='"'){cell+='"';i++;continue}
+    if(c==='"'){q=!q;continue}
+    if(c===',' && !q){row.push(cell);cell='';continue}
+    if((c==='\n'||c==='\r') && !q){ if(c==='\r'&&n==='\n')i++; row.push(cell); if(row.some(v=>v.trim()!=='')) rows.push(row); row=[]; cell=''; continue}
+    cell+=c;
+  }
+  row.push(cell); if(row.some(v=>v.trim()!=='')) rows.push(row);
+  const header=rows.shift().map(h=>h.trim());
+  return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
+}
+function norm(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()}
+function getCampo(row, nomesPossiveis){
+  const mapa = {};
+  Object.keys(row).forEach(k=>{ mapa[norm(k).replace(/[^A-Z0-9]/g,'')] = row[k]; });
+  for(const nome of nomesPossiveis){
+    const chave = norm(nome).replace(/[^A-Z0-9]/g,'');
+    if(Object.prototype.hasOwnProperty.call(mapa, chave)) return mapa[chave];
+  }
+  return '';
+}
+function fmt(s){ if(s==null) return '-'; const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60; return `${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; }
+function limparTempo(t){
+  if(t == null) return '';
+  t = String(t).trim();
+  if(!t) return '';
+  t = t.replace(/^'+/,'').replace(',', '.');
+  const dateMatch = t.match(/Date\([^,]+,[^,]+,[^,]+,(\d+),(\d+),(\d+)\)/);
+  if(dateMatch) return `${Number(dateMatch[1])}:${String(Number(dateMatch[2])).padStart(2,'0')}:${String(Number(dateMatch[3])).padStart(2,'0')}`;
+  const timeMatch = t.match(/(\d{1,3}):(\d{1,2})(?::(\d{1,2}))?/);
+  if(timeMatch) return `${Number(timeMatch[1])}:${String(Number(timeMatch[2])).padStart(2,'0')}:${String(Number(timeMatch[3]||0)).padStart(2,'0')}`;
+  if(!Number.isNaN(Number(t))){
+    const n = Number(t);
+    const total = n > 0 && n < 1 ? Math.round(n * 24 * 3600) : Math.round(n);
+    return fmt(total);
+  }
+  return t;
+}
+function secs(t){
+  t = limparTempo(t);
+  if(!t) return null;
+  if(t===CONFIG.sentinelSemTempo) return null;
+  const m = t.match(/^(\d{1,3}):(\d{2}):(\d{2})$/);
+  if(!m) return null;
+  const h=Number(m[1]), mi=Number(m[2]), s=Number(m[3]);
+  if(mi>59 || s>59) return null;
+  return h*3600+mi*60+s;
+}
+function categoryKey(c){return norm(c).replace(/[^A-Z0-9]/g,'')}
+function keyOf(a){return `${a.catKey || categoryKey(a.categoria)}|${norm(a.atleta)}`}
+function limparTexto(s){
+  return String(s ?? '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function preparar(raw){
+  const lidos = raw
+    .map((r, idx) => {
+      const categoria = limparTexto(getCampo(r, ['categoria'])).toUpperCase();
+      const atleta = limparTexto(getCampo(r, ['atleta'])).toUpperCase();
+      const tempoRaw = getCampo(r, ['Tempo Seg','TempoSeg','tempo_seg','tempo','tempo segundos','Tempo']);
+      const tempo = limparTempo(tempoRaw);
+      const segundos = secs(tempoRaw);
+      const catKey = categoryKey(categoria);
+      return { categoria, catKey, atleta, tempo, segundos, rawIndex: idx };
+    })
+    .filter(a => a.categoria && a.atleta && a.catKey);
+
+  // Consolidação defensiva por CATEGORIA NORMALIZADA + ATLETA.
+  const mapa = new Map();
+  lidos.forEach(a => {
+    const k = `${a.catKey}|${norm(a.atleta)}`;
+    const atual = mapa.get(k);
+    if(!atual){ mapa.set(k, a); return; }
+    const atualTemTempo = atual.segundos != null;
+    const novoTemTempo = a.segundos != null;
+    if(novoTemTempo && !atualTemTempo) mapa.set(k, a);
+    else if(novoTemTempo && atualTemTempo && a.segundos < atual.segundos) mapa.set(k, a);
+  });
+
+  const arr = [...mapa.values()];
+  const timed = arr
+    .filter(a => a.segundos != null)
+    .sort((a,b) => a.segundos - b.segundos || a.atleta.localeCompare(b.atleta));
+  timed.forEach((a,i) => a.geral = i + 1);
+
+  const porCat = {};
+  timed.forEach(a => { (porCat[a.catKey] ??= []).push(a); });
+  Object.values(porCat).forEach(list => list.forEach((a,i) => a.catPos = i + 1));
+
+  return arr.sort((a,b) =>
+    a.catKey.localeCompare(b.catKey) ||
+    (a.segundos == null) - (b.segundos == null) ||
+    (a.segundos ?? 999999999) - (b.segundos ?? 999999999) ||
+    a.atleta.localeCompare(b.atleta)
+  );
+}
+function detectarNovosTempos(novos){
+  const atuais = new Map(novos.filter(a=>a.segundos!=null).map(a=>[keyOf(a), a]));
+  let conhecidos = [];
+  try{ conhecidos = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '[]'); }catch(e){}
+  const prev = new Set(conhecidos);
+  newlyTimedKeys = new Set([...atuais.keys()].filter(k=>!prev.has(k)));
+  if(newlyTimedKeys.size){
+    lastNewAthlete = [...newlyTimedKeys].map(k=>atuais.get(k)).sort((a,b)=>(a.geral??9999)-(b.geral??9999))[0];
+    setTimeout(()=>{newlyTimedKeys.clear(); render();}, CONFIG.highlightMs);
+  }
+  localStorage.setItem(CONFIG.storageKey, JSON.stringify([...atuais.keys()]));
+}
+function gruposPorCategoria(base){
+  const mapa = new Map();
+  base.forEach(d => {
+    const key = d.catKey || categoryKey(d.categoria);
+    if(!mapa.has(key)) mapa.set(key, { key, label: d.categoria, items: [] });
+    mapa.get(key).items.push(d);
+  });
+  return [...mapa.values()].sort((a,b)=>a.label.localeCompare(b.label));
+}
+function popularCategorias(){
+  const sel=$('categoria'), atual=sel.value;
+  sel.innerHTML='<option value="">Todas as categorias</option>';
+  gruposPorCategoria(dados).forEach(g=>{
+    const o=document.createElement('option');
+    o.value=g.key;
+    o.textContent=g.label;
+    sel.appendChild(o);
+  });
+  if([...sel.options].some(o=>o.value===atual)) sel.value=atual;
+}
+function renderPodium(viewAll){
+  const catFiltro=$('categoria').value;
+  const grupos = gruposPorCategoria(catFiltro ? viewAll.filter(d=>d.catKey===catFiltro) : viewAll);
+  $('podiumHint').textContent = catFiltro ? 'Categoria filtrada em destaque.' : 'Pódios parciais conforme tempos já apurados.';
+  const box=$('podium'); box.innerHTML='';
+  const medals=['🥇','🥈','🥉'];
+  grupos.forEach(g=>{
+    const top = g.items.filter(d=>d.segundos!=null).sort((a,b)=>a.segundos-b.segundos || a.atleta.localeCompare(b.atleta)).slice(0,3);
+    const card=document.createElement('article'); card.className='podiumCat';
+    card.innerHTML = `<h3>${g.label}</h3>` + (top.length ? top.map((d,i)=>`<div class="podiumRow"><div class="medal">${medals[i]}</div><div class="ath" title="${d.atleta}">${d.atleta}</div><div class="tm">${fmt(d.segundos)}</div></div>`).join('') : '<div class="podiumEmpty">Sem tempos apurados ainda.</div>');
+    box.appendChild(card);
+  });
+}
+function render(){
+  const busca = norm($('busca').value);
+  const catFiltro = $('categoria').value;
+
+  const filtrados = dados.filter(d =>
+    (!catFiltro || d.catKey === catFiltro) &&
+    (!busca || norm(d.atleta).includes(busca))
+  );
+
+  const tab = $('tabela');
+  tab.innerHTML = '';
+
+  const total = dados.length;
+  const ap = dados.filter(d => d.segundos != null).length;
+  const pend = total - ap;
+  const melhor = dados.filter(d => d.segundos != null).sort((a,b) => a.segundos - b.segundos)[0];
+
+  $('total').textContent = total;
+  $('apurados').textContent = ap;
+  $('pendentes').textContent = pend;
+  $('melhor').textContent = melhor ? fmt(melhor.segundos) : '-';
+
+  if(lastNewAthlete) $('latestTicker').textContent = `${lastNewAthlete.atleta} • ${lastNewAthlete.categoria} • ${fmt(lastNewAthlete.segundos)}`;
+  else if(melhor) $('latestTicker').textContent = `Melhor tempo geral: ${melhor.atleta} • ${fmt(melhor.segundos)}`;
+
+  renderPodium(dados);
+
+  if(!filtrados.length){
+    tab.innerHTML = '<div class="empty">Nenhum atleta encontrado.</div>';
+    return;
+  }
+
+  gruposPorCategoria(filtrados).forEach(g => {
+    const head = document.createElement('div');
+    head.className = 'catHead';
+    head.innerHTML = '<div>Geral</div><div>Categoria</div><div class="catTitle">'+g.label+'</div><div>Tempo</div>';
+    tab.appendChild(head);
+
+    const linhas = [...g.items].sort((a,b) =>
+      (a.segundos == null) - (b.segundos == null) ||
+      (a.segundos ?? 999999999) - (b.segundos ?? 999999999) ||
+      a.atleta.localeCompare(b.atleta)
+    );
+
+    linhas.forEach(d => {
+      const r = document.createElement('div');
+      const isNew = newlyTimedKeys.has(keyOf(d));
+      const rankClass = d.catPos === 1 ? ' rank1' : d.catPos === 2 ? ' rank2' : d.catPos === 3 ? ' rank3' : '';
+      const medal = d.catPos === 1 ? '🥇' : d.catPos === 2 ? '🥈' : d.catPos === 3 ? '🥉' : '';
+      r.className = 'row ' + (d.segundos != null ? 'timed' : 'untimed') + rankClass + (isNew ? ' newEntry' : '');
+      r.innerHTML = `<div class="pos">${d.geral ?? '-'}</div><div class="catPos">${d.catPos ?? '-'}</div><div class="nome" title="${d.atleta}">${medal ? `<span class="medalInline">${medal}</span>` : ''}${d.atleta}</div><div class="tempo">${d.segundos != null ? fmt(d.segundos) : 'SEM TEMPO'}</div>`;
+      tab.appendChild(r);
+    });
+  });
+}
+function tempoRelativo(ms){
+  const s=Math.max(0,Math.floor(ms/1000));
+  if(s<5) return 'agora';
+  if(s<60) return `há ${s}s`;
+  const m=Math.floor(s/60);
+  if(m<60) return `há ${m}min`;
+  const h=Math.floor(m/60);
+  return `há ${h}h ${m%60}min`;
+}
+function atualizarIndicadorStatus(syncing=false){
+  if(syncing){
+    $('status').innerHTML='<span class="liveDot sync"></span>Sincronizando... <span class="pill">aguarde</span>';
+    if(lastSuccessExact) $('last').textContent='Última atualização: '+lastSuccessExact;
+    return;
+  }
+  if(isOnline && lastSuccessAt){
+    $('status').innerHTML='<span class="liveDot"></span>Atualizado '+tempoRelativo(Date.now()-lastSuccessAt.getTime())+' <span class="pill">online</span>';
+    $('last').textContent='Última atualização: '+lastSuccessExact;
+  } else {
+    $('status').innerHTML='<span class="liveDot offline"></span>Sem atualização <span class="pill">offline/erro</span>';
+    $('last').textContent= lastError ? lastError + ' — mantendo os últimos dados carregados.' : 'Ainda não foi possível carregar a planilha.';
+  }
+}
+function carregarPlanilhaViaJsonp(){
+  return new Promise((resolve, reject)=>{
+    const callbackName = 'goiasRideCallback_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const script = document.createElement('script');
+    const timeout = setTimeout(()=>{
+      cleanup();
+      reject(new Error('Tempo limite ao consultar o Google Sheets'));
+    }, 15000);
+    function cleanup(){
+      clearTimeout(timeout);
+      if(script.parentNode) script.parentNode.removeChild(script);
+      try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
+    }
+    window[callbackName] = function(response){
+      try{
+        cleanup();
+        if(!response || response.status === 'error'){
+          const msg = response && response.errors && response.errors[0] ? response.errors[0].detailed_message || response.errors[0].message : 'Resposta inválida do Google Sheets';
+          reject(new Error(msg));
+          return;
+        }
+        const table = response.table || {cols:[], rows:[]};
+        const headers = table.cols.map((c,i)=>String(c.label || c.id || `col${i}`).trim());
+        const rows = table.rows.map(row=>{
+          const obj = {};
+          headers.forEach((h,i)=>{
+            const cell = row.c[i];
+            obj[h] = cell ? String(cell.f != null ? cell.f : (cell.v != null ? cell.v : '')).trim() : '';
+          });
+          return obj;
+        });
+        resolve(rows);
+      }catch(err){
+        cleanup();
+        reject(err);
+      }
+    };
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?gid=${CONFIG.gid}&headers=1&tqx=out:json;responseHandler:${callbackName}&tq=${encodeURIComponent('select *')}&_=${Date.now()}`;
+    script.src = url;
+    script.onerror = ()=>{
+      cleanup();
+      reject(new Error('Falha de rede ao carregar o script do Google Sheets'));
+    };
+    document.body.appendChild(script);
+  });
+}
+async function carregar(){
+  atualizarIndicadorStatus(true);
+  try{
+    const raw = await carregarPlanilhaViaJsonp();
+    const novos=preparar(raw);
+    detectarNovosTempos(novos);
+    dados=novos;
+    popularCategorias();
+    render();
+    lastSuccessAt=new Date();
+    lastSuccessExact=lastSuccessAt.toLocaleString('pt-BR');
+    lastError='';
+    isOnline=true;
+    atualizarIndicadorStatus(false);
+  }
+  catch(e){
+    isOnline=false;
+    lastError=(e && e.message ? e.message : 'Erro desconhecido') + ' — confira se a planilha está pública/publicada.';
+    atualizarIndicadorStatus(false);
+    console.error(e);
+  }
+}
+$('busca').addEventListener('input',render);
+$('categoria').addEventListener('change',render);
+$('atualizar').addEventListener('click',carregar);
+carregar();
+setInterval(carregar,CONFIG.autoRefreshMs);
+setInterval(()=>atualizarIndicadorStatus(false),1000);
+</script>
+</body>
+</html>
