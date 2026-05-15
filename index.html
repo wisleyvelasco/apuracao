@@ -291,7 +291,7 @@ function popularCategorias(){
 function renderPodium(viewAll){
   const catFiltro=$('categoria').value;
   const grupos = gruposPorCategoria(catFiltro ? viewAll.filter(d=>d.catKey===catFiltro) : viewAll);
-  $('podiumHint').textContent = catFiltro ? 'Categoria filtrada em destaque.' : 'Três melhores colocadao já apurados.';
+  $('podiumHint').textContent = catFiltro ? 'Categoria filtrada em destaque.' : 'Três melhores colocados já apurados.';
   const box=$('podium'); box.innerHTML='';
   const medals=['🥇','🥈','🥉'];
   grupos.forEach(g=>{
