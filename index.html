@@ -72,7 +72,7 @@
     <div id="tabela"></div>
   </main>
   <footer>Atualização automática da página a cada <b>30 segundos</b>. Classificação geral calculada por segmento/percurso.
-  <!-- Versão v12: classificação geral por segmento/percurso (Geral Reduzido e Geral Completo), cabeçalho de categoria sem sobreposição e listagem completa por categoria. Para trocar a planilha, altere <b>CONFIG.sheetId</b> e <b>CONFIG.gid</b> no código. Para inserir a logo, salve a imagem como <b>logo-evento.png</b> na mesma pasta deste HTML. -->
+  <!-- Versão v14: classificação geral por segmento/percurso (Geral Reduzido e Geral Completo), cabeçalho de categoria sem sobreposição e listagem completa por categoria. Para trocar a planilha, altere <b>CONFIG.sheetId</b> e <b>CONFIG.gid</b> no código. Para inserir a logo, salve a imagem como <b>logo-evento.png</b> na mesma pasta deste HTML. -->
   </footer>
 </div>
 <script>
@@ -101,6 +101,18 @@ const CONFIG = {
   sentinelSemTempo: '12:00:00',
   highlightMs: 9000,
   storageKey: 'goiasRideTemposConhecidos_v25',
+
+  // Aliases aceitos para as colunas da planilha.
+  // Isto torna o painel mais tolerante a pequenas variações de cabeçalho:
+  // "atleta", "Nome", "Nome do atleta", "participante" etc.
+  colunas: {
+    categoria: ['categoria', 'cat', 'categoria atleta', 'categoria inscrição', 'categoria inscricao'],
+    atleta: ['atleta', 'nome', 'nome atleta', 'nome do atleta', 'nome completo', 'participante', 'competidor'],
+    tempo: ['Tempo Seg', 'TempoSeg', 'tempo_seg', 'tempo seg', 'tempo segundos', 'tempo', 'tempo final']
+  },
+
+  // Se true, mostra no console do navegador as colunas e amostras recebidas.
+  debug: true,
 
   // Classificação geral por segmento/percurso.
   // A coluna "Geral" passa a comparar somente atletas do mesmo grupo competitivo.
@@ -151,6 +163,27 @@ function getCampo(row, nomesPossiveis){
   }
   return '';
 }
+function colunasRecebidas(raw){
+  if(!raw || !raw.length) return [];
+  return Object.keys(raw[0] || {}).filter(Boolean);
+}
+function temAlgumaColuna(raw, aliases){
+  if(!raw || !raw.length) return false;
+  const cols = Object.keys(raw[0] || {}).map(k => norm(k).replace(/[^A-Z0-9]/g,''));
+  return aliases.some(a => cols.includes(norm(a).replace(/[^A-Z0-9]/g,'')));
+}
+function validarEstruturaPlanilha(raw){
+  if(!raw || !raw.length){
+    throw new Error('A planilha foi acessada, mas retornou 0 linhas. Verifique se o GID aponta para a aba correta e se há dados abaixo do cabeçalho.');
+  }
+  const faltantes = [];
+  if(!temAlgumaColuna(raw, CONFIG.colunas.categoria)) faltantes.push('categoria');
+  if(!temAlgumaColuna(raw, CONFIG.colunas.atleta)) faltantes.push('atleta/nome');
+  if(faltantes.length){
+    const cols = colunasRecebidas(raw).join(' | ') || '(sem cabeçalhos identificados)';
+    throw new Error('Planilha carregada, mas não encontrei as colunas obrigatórias: ' + faltantes.join(', ') + '. Colunas recebidas: ' + cols);
+  }
+}
 function fmt(s){ if(s==null) return '-'; const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), ss=s%60; return `${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; }
 function limparTempo(t){
   if(t == null) return '';
@@ -197,9 +230,9 @@ function limparTexto(s){
 function preparar(raw){
   const lidos = raw
     .map((r, idx) => {
-      const categoria = limparTexto(getCampo(r, ['categoria'])).toUpperCase();
-      const atleta = limparTexto(getCampo(r, ['atleta'])).toUpperCase();
-      const tempoRaw = getCampo(r, ['Tempo Seg','TempoSeg','tempo_seg','tempo','tempo segundos','Tempo']);
+      const categoria = limparTexto(getCampo(r, CONFIG.colunas.categoria)).toUpperCase();
+      const atleta = limparTexto(getCampo(r, CONFIG.colunas.atleta)).toUpperCase();
+      const tempoRaw = getCampo(r, CONFIG.colunas.tempo);
       const tempo = limparTempo(tempoRaw);
       const segundos = secs(tempoRaw);
       const catKey = categoryKey(categoria);
@@ -431,7 +464,17 @@ async function carregar(){
   atualizarIndicadorStatus(true);
   try{
     const raw = await carregarPlanilhaViaJsonp();
+    if(CONFIG.debug){
+      console.log('[GoRide] Linhas brutas recebidas:', raw.length);
+      console.log('[GoRide] Colunas recebidas:', colunasRecebidas(raw));
+      console.table(raw.slice(0, 5));
+    }
+    validarEstruturaPlanilha(raw);
     const novos=preparar(raw);
+    if(!novos.length){
+      const cols = colunasRecebidas(raw).join(' | ') || '(sem cabeçalhos identificados)';
+      throw new Error('A planilha foi carregada, mas nenhum atleta válido foi montado. Confira se as linhas têm categoria e atleta preenchidos. Colunas recebidas: ' + cols);
+    }
     detectarNovosTempos(novos);
     dados=novos;
     popularCategorias();
