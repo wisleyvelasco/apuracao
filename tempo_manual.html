@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>GoRide | Lançamento Manual de Tempo</title>
 
   <style>
@@ -18,9 +17,7 @@
       --branco: #ffffff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -63,13 +60,9 @@
       opacity: 0.95;
     }
 
-    form {
-      padding: 22px 20px 20px;
-    }
+    form { padding: 22px 20px 20px; }
 
-    .campo {
-      margin-bottom: 18px;
-    }
+    .campo { margin-bottom: 18px; }
 
     label {
       display: block;
@@ -82,7 +75,7 @@
       width: 100%;
       border: 1px solid var(--cinza-borda);
       border-radius: 12px;
-      padding: 14px 14px;
+      padding: 14px;
       font-size: 1.15rem;
       outline: none;
       background: #fff;
@@ -109,16 +102,9 @@
       font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.15s ease, transform 0.05s ease;
     }
 
-    button:hover {
-      background: var(--azul-escuro);
-    }
-
-    button:active {
-      transform: scale(0.99);
-    }
+    button:hover { background: var(--azul-escuro); }
 
     button:disabled {
       opacity: 0.65;
@@ -148,21 +134,49 @@
       border: 1px solid rgba(179, 38, 30, 0.25);
     }
 
+    .confirmacao {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f7fafc;
+      border: 1px solid var(--cinza-borda);
+      display: none;
+    }
+
+    .confirmacao.visivel { display: block; }
+
+    .confirmacao h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: var(--verde);
+    }
+
+    .linha-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 0;
+      border-top: 1px solid #e8edf2;
+      font-size: 0.95rem;
+    }
+
+    .linha-info:first-of-type { border-top: 0; }
+
+    .linha-info span:first-child {
+      color: #68717a;
+      font-weight: 700;
+    }
+
+    .linha-info span:last-child {
+      font-weight: 700;
+      text-align: right;
+    }
+
     .rodape {
       padding: 0 20px 20px;
       font-size: 0.78rem;
       color: #6b747d;
       text-align: center;
-    }
-
-    @media (max-width: 360px) {
-      .topo h1 {
-        font-size: 1.2rem;
-      }
-
-      input {
-        font-size: 1rem;
-      }
     }
   </style>
 </head>
@@ -177,35 +191,38 @@
     <form id="formTempoManual" autocomplete="off">
       <div class="campo">
         <label for="cpf">CPF do atleta</label>
-        <input
-          type="tel"
-          id="cpf"
-          name="cpf"
-          inputmode="numeric"
-          maxlength="14"
-          placeholder="000.000.000-00"
-          required
-        />
+        <input type="tel" id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
         <div class="ajuda">Informe o CPF do atleta.</div>
       </div>
 
       <div class="campo">
         <label for="tempo">Tempo aferido</label>
-        <input
-          type="tel"
-          id="tempo"
-          name="tempo"
-          inputmode="numeric"
-          maxlength="8"
-          placeholder="hh:mm:ss"
-          required
-        />
+        <input type="tel" id="tempo" inputmode="numeric" maxlength="8" placeholder="hh:mm:ss" required />
         <div class="ajuda">Formato obrigatório: hh:mm:ss.</div>
       </div>
 
       <button type="submit" id="btnSalvar">Salvar tempo</button>
 
       <div id="mensagem" class="mensagem"></div>
+
+      <div id="confirmacao" class="confirmacao">
+        <h2>Registro confirmado</h2>
+
+        <div class="linha-info">
+          <span>CPF</span>
+          <span id="confCpf">-</span>
+        </div>
+
+        <div class="linha-info">
+          <span>Tempo</span>
+          <span id="confTempo">-</span>
+        </div>
+
+        <div class="linha-info" id="linhaPlanilhaBox">
+          <span>Linha</span>
+          <span id="confLinha">-</span>
+        </div>
+      </div>
     </form>
 
     <div class="rodape">
@@ -214,17 +231,19 @@
   </main>
 
   <script>
-    // =============================================================================================
-    // IMPORTANTE:
-    // Substitua a URL abaixo pela URL do Apps Script implantado como Aplicativo da Web.
-    // =============================================================================================
-    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw83Diq0_wO8uuDLBgAssEbP2WTWE3RhA-siDV3EaPTIUUii5LPe-4y-Oj6vsJdN32d/exec';
+    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9r4SERqagiKEIGd4idmJYg-HlaQFHeL-ybfyxR8xnUMbLmSdbwojsrLLHmRx1NwVz/exec';
 
     const form = document.getElementById('formTempoManual');
     const inputCPF = document.getElementById('cpf');
     const inputTempo = document.getElementById('tempo');
     const btnSalvar = document.getElementById('btnSalvar');
     const boxMensagem = document.getElementById('mensagem');
+
+    const boxConfirmacao = document.getElementById('confirmacao');
+    const confCpf = document.getElementById('confCpf');
+    const confTempo = document.getElementById('confTempo');
+    const confLinha = document.getElementById('confLinha');
+    const linhaPlanilhaBox = document.getElementById('linhaPlanilhaBox');
 
     inputCPF.addEventListener('input', function () {
       this.value = mascararCPF(this.value);
@@ -238,6 +257,7 @@
       event.preventDefault();
 
       limparMensagem();
+      limparConfirmacao();
 
       const cpf = inputCPF.value.trim();
       const tempo = inputTempo.value.trim();
@@ -254,28 +274,41 @@
         return;
       }
 
-      if (APP_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
-        mostrarMensagem('Configure a URL do Apps Script no arquivo tempo_manual.html.', false);
+      if (!APP_SCRIPT_URL.startsWith('https://script.google.com/')) {
+        mostrarMensagem('URL do Apps Script inválida ou não configurada.', false);
         return;
       }
 
       salvarTempoManual(cpf, tempo);
     });
 
-    function salvarTempoManual(cpf, tempo) {
+    async function salvarTempoManual(cpf, tempo) {
       btnSalvar.disabled = true;
       btnSalvar.textContent = 'Salvando...';
 
-      chamarJSONP(APP_SCRIPT_URL, {
-        acao: 'salvarTempoManual',
-        cpf: cpf,
-        tempo: tempo
-      }, function (resposta) {
+      try {
+        const respostaHttp = await fetch(APP_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            cpf: cpf,
+            tempo: tempo
+          })
+        });
+
+        const resposta = await respostaHttp.json();
+
         btnSalvar.disabled = false;
         btnSalvar.textContent = 'Salvar tempo';
 
         if (resposta && resposta.ok) {
+          const cpfConfirmado = resposta.cpf ? formatarCPF(resposta.cpf) : cpf;
+          const tempoConfirmado = resposta.tempo || tempo;
+
           mostrarMensagem(resposta.mensagem || 'Tempo manual registrado com sucesso.', true);
+          mostrarConfirmacao(cpfConfirmado, tempoConfirmado, resposta.linha);
 
           inputCPF.value = '';
           inputTempo.value = '';
@@ -289,98 +322,41 @@
             false
           );
         }
-      }, function () {
+
+      } catch (erro) {
         btnSalvar.disabled = false;
         btnSalvar.textContent = 'Salvar tempo';
-        mostrarMensagem('Falha de comunicação com o servidor de gravação.', false);
-      });
-    }
 
-    function chamarJSONP(url, parametros, sucesso, erro) {
-      const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+        mostrarMensagem(
+          'Falha de comunicação com o servidor de gravação. Verifique a implantação do Apps Script ou possível bloqueio de CORS.',
+          false
+        );
 
-      parametros.callback = callbackName;
-
-      const queryString = Object.keys(parametros)
-        .map(function (chave) {
-          return encodeURIComponent(chave) + '=' + encodeURIComponent(parametros[chave]);
-        })
-        .join('&');
-
-      const script = document.createElement('script');
-      script.src = url + (url.indexOf('?') === -1 ? '?' : '&') + queryString;
-
-      let finalizado = false;
-
-      const timeout = setTimeout(function () {
-        if (!finalizado) {
-          finalizado = true;
-          limparJSONP();
-          if (typeof erro === 'function') erro();
-        }
-      }, 15000);
-
-      window[callbackName] = function (resposta) {
-        if (!finalizado) {
-          finalizado = true;
-          clearTimeout(timeout);
-          limparJSONP();
-          if (typeof sucesso === 'function') sucesso(resposta);
-        }
-      };
-
-      script.onerror = function () {
-        if (!finalizado) {
-          finalizado = true;
-          clearTimeout(timeout);
-          limparJSONP();
-          if (typeof erro === 'function') erro();
-        }
-      };
-
-      function limparJSONP() {
-        try {
-          delete window[callbackName];
-        } catch (e) {
-          window[callbackName] = undefined;
-        }
-
-        if (script && script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
+        console.error(erro);
       }
-
-      document.body.appendChild(script);
     }
 
     function mascararCPF(valor) {
       let digitos = String(valor || '').replace(/\D/g, '').slice(0, 11);
 
-      if (digitos.length <= 3) {
-        return digitos;
-      }
-
-      if (digitos.length <= 6) {
-        return digitos.replace(/(\d{3})(\d+)/, '$1.$2');
-      }
-
-      if (digitos.length <= 9) {
-        return digitos.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
-      }
+      if (digitos.length <= 3) return digitos;
+      if (digitos.length <= 6) return digitos.replace(/(\d{3})(\d+)/, '$1.$2');
+      if (digitos.length <= 9) return digitos.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
 
       return digitos.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    }
+
+    function formatarCPF(valor) {
+      const digitos = String(valor || '').replace(/\D/g, '').slice(0, 11);
+      if (digitos.length !== 11) return valor;
+      return digitos.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     }
 
     function mascararTempo(valor) {
       let digitos = String(valor || '').replace(/\D/g, '').slice(0, 6);
 
-      if (digitos.length <= 2) {
-        return digitos;
-      }
-
-      if (digitos.length <= 4) {
-        return digitos.replace(/(\d{2})(\d+)/, '$1:$2');
-      }
+      if (digitos.length <= 2) return digitos;
+      if (digitos.length <= 4) return digitos.replace(/(\d{2})(\d+)/, '$1:$2');
 
       return digitos.replace(/(\d{2})(\d{2})(\d{1,2})/, '$1:$2:$3');
     }
@@ -390,18 +366,14 @@
     }
 
     function validarFormatoTempo(valor) {
-      if (!/^\d{2}:\d{2}:\d{2}$/.test(valor)) {
-        return false;
-      }
+      if (!/^\d{2}:\d{2}:\d{2}$/.test(valor)) return false;
 
       const partes = valor.split(':');
       const hh = Number(partes[0]);
       const mm = Number(partes[1]);
       const ss = Number(partes[2]);
 
-      if (Number.isNaN(hh) || Number.isNaN(mm) || Number.isNaN(ss)) {
-        return false;
-      }
+      if (Number.isNaN(hh) || Number.isNaN(mm) || Number.isNaN(ss)) return false;
 
       return hh >= 0 && hh <= 99 && mm >= 0 && mm <= 59 && ss >= 0 && ss <= 59;
     }
@@ -414,6 +386,27 @@
     function limparMensagem() {
       boxMensagem.textContent = '';
       boxMensagem.className = 'mensagem';
+    }
+
+    function mostrarConfirmacao(cpf, tempo, linha) {
+      confCpf.textContent = cpf || '-';
+      confTempo.textContent = tempo || '-';
+
+      if (linha) {
+        confLinha.textContent = linha;
+        linhaPlanilhaBox.style.display = 'flex';
+      } else {
+        linhaPlanilhaBox.style.display = 'none';
+      }
+
+      boxConfirmacao.className = 'confirmacao visivel';
+    }
+
+    function limparConfirmacao() {
+      confCpf.textContent = '-';
+      confTempo.textContent = '-';
+      confLinha.textContent = '-';
+      boxConfirmacao.className = 'confirmacao';
     }
   </script>
 </body>
