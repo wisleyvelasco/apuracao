@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GoRide | Lançamento Manual de Tempo</title>
+
+  <style>
+    :root {
+      --azul: #2f80c0;
+      --azul-escuro: #1f5f91;
+      --verde: #1f8f4d;
+      --vermelho: #b3261e;
+      --cinza-bg: #f3f5f7;
+      --cinza-texto: #333;
+      --cinza-borda: #d9dee3;
+      --branco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cinza-bg);
+      color: var(--cinza-texto);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: var(--branco);
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+    }
+
+    .topo {
+      background: var(--azul);
+      color: var(--branco);
+      padding: 22px 20px;
+      text-align: center;
+    }
+
+    .topo h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .topo p {
+      margin: 8px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    form {
+      padding: 22px 20px 20px;
+    }
+
+    .campo {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 7px;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--cinza-borda);
+      border-radius: 12px;
+      padding: 14px 14px;
+      font-size: 1.15rem;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(47, 128, 192, 0.15);
+    }
+
+    .ajuda {
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: #68717a;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 15px 14px;
+      background: var(--azul);
+      color: var(--branco);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.05s ease;
+    }
+
+    button:hover {
+      background: var(--azul-escuro);
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .mensagem {
+      margin-top: 16px;
+      padding: 13px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      display: none;
+      line-height: 1.35;
+    }
+
+    .mensagem.ok {
+      display: block;
+      background: rgba(31, 143, 77, 0.12);
+      color: var(--verde);
+      border: 1px solid rgba(31, 143, 77, 0.25);
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: rgba(179, 38, 30, 0.10);
+      color: var(--vermelho);
+      border: 1px solid rgba(179, 38, 30, 0.25);
+    }
+
+    .rodape {
+      padding: 0 20px 20px;
+      font-size: 0.78rem;
+      color: #6b747d;
+      text-align: center;
+    }
+
+    @media (max-width: 360px) {
+      .topo h1 {
+        font-size: 1.2rem;
+      }
+
+      input {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header class="topo">
+      <h1>GoRide</h1>
+      <p>Lançamento manual de tempo</p>
+    </header>
+
+    <form id="formTempoManual" autocomplete="off">
+      <div class="campo">
+        <label for="cpf">CPF do atleta</label>
+        <input
+          type="tel"
+          id="cpf"
+          name="cpf"
+          inputmode="numeric"
+          maxlength="14"
+          placeholder="000.000.000-00"
+          required
+        />
+        <div class="ajuda">Informe o CPF do atleta.</div>
+      </div>
+
+      <div class="campo">
+        <label for="tempo">Tempo aferido</label>
+        <input
+          type="tel"
+          id="tempo"
+          name="tempo"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="hh:mm:ss"
+          required
+        />
+        <div class="ajuda">Formato obrigatório: hh:mm:ss.</div>
+      </div>
+
+      <button type="submit" id="btnSalvar">Salvar tempo</button>
+
+      <div id="mensagem" class="mensagem"></div>
+    </form>
+
+    <div class="rodape">
+      Uso interno da comissão organizadora do GoRide.
+    </div>
+  </main>
+
+  <script>
+    // =============================================================================================
+    // IMPORTANTE:
+    // Substitua a URL abaixo pela URL do Apps Script implantado como Aplicativo da Web.
+    // =============================================================================================
+    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw83Diq0_wO8uuDLBgAssEbP2WTWE3RhA-siDV3EaPTIUUii5LPe-4y-Oj6vsJdN32d/exec';
+
+    const form = document.getElementById('formTempoManual');
+    const inputCPF = document.getElementById('cpf');
+    const inputTempo = document.getElementById('tempo');
+    const btnSalvar = document.getElementById('btnSalvar');
+    const boxMensagem = document.getElementById('mensagem');
+
+    inputCPF.addEventListener('input', function () {
+      this.value = mascararCPF(this.value);
+    });
+
+    inputTempo.addEventListener('input', function () {
+      this.value = mascararTempo(this.value);
+    });
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      limparMensagem();
+
+      const cpf = inputCPF.value.trim();
+      const tempo = inputTempo.value.trim();
+
+      if (!validarFormatoCPF(cpf)) {
+        mostrarMensagem('Informe um CPF no formato 000.000.000-00.', false);
+        inputCPF.focus();
+        return;
+      }
+
+      if (!validarFormatoTempo(tempo)) {
+        mostrarMensagem('Informe o tempo no formato hh:mm:ss.', false);
+        inputTempo.focus();
+        return;
+      }
+
+      if (APP_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
+        mostrarMensagem('Configure a URL do Apps Script no arquivo tempo_manual.html.', false);
+        return;
+      }
+
+      salvarTempoManual(cpf, tempo);
+    });
+
+    function salvarTempoManual(cpf, tempo) {
+      btnSalvar.disabled = true;
+      btnSalvar.textContent = 'Salvando...';
+
+      chamarJSONP(APP_SCRIPT_URL, {
+        acao: 'salvarTempoManual',
+        cpf: cpf,
+        tempo: tempo
+      }, function (resposta) {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = 'Salvar tempo';
+
+        if (resposta && resposta.ok) {
+          mostrarMensagem(resposta.mensagem || 'Tempo manual registrado com sucesso.', true);
+
+          inputCPF.value = '';
+          inputTempo.value = '';
+          inputCPF.focus();
+
+        } else {
+          mostrarMensagem(
+            resposta && resposta.mensagem
+              ? resposta.mensagem
+              : 'Não foi possível registrar o tempo.',
+            false
+          );
+        }
+      }, function () {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = 'Salvar tempo';
+        mostrarMensagem('Falha de comunicação com o servidor de gravação.', false);
+      });
+    }
+
+    function chamarJSONP(url, parametros, sucesso, erro) {
+      const callbackName = 'jsonpCallback_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+      parametros.callback = callbackName;
+
+      const queryString = Object.keys(parametros)
+        .map(function (chave) {
+          return encodeURIComponent(chave) + '=' + encodeURIComponent(parametros[chave]);
+        })
+        .join('&');
+
+      const script = document.createElement('script');
+      script.src = url + (url.indexOf('?') === -1 ? '?' : '&') + queryString;
+
+      let finalizado = false;
+
+      const timeout = setTimeout(function () {
+        if (!finalizado) {
+          finalizado = true;
+          limparJSONP();
+          if (typeof erro === 'function') erro();
+        }
+      }, 15000);
+
+      window[callbackName] = function (resposta) {
+        if (!finalizado) {
+          finalizado = true;
+          clearTimeout(timeout);
+          limparJSONP();
+          if (typeof sucesso === 'function') sucesso(resposta);
+        }
+      };
+
+      script.onerror = function () {
+        if (!finalizado) {
+          finalizado = true;
+          clearTimeout(timeout);
+          limparJSONP();
+          if (typeof erro === 'function') erro();
+        }
+      };
+
+      function limparJSONP() {
+        try {
+          delete window[callbackName];
+        } catch (e) {
+          window[callbackName] = undefined;
+        }
+
+        if (script && script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      }
+
+      document.body.appendChild(script);
+    }
+
+    function mascararCPF(valor) {
+      let digitos = String(valor || '').replace(/\D/g, '').slice(0, 11);
+
+      if (digitos.length <= 3) {
+        return digitos;
+      }
+
+      if (digitos.length <= 6) {
+        return digitos.replace(/(\d{3})(\d+)/, '$1.$2');
+      }
+
+      if (digitos.length <= 9) {
+        return digitos.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+      }
+
+      return digitos.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    }
+
+    function mascararTempo(valor) {
+      let digitos = String(valor || '').replace(/\D/g, '').slice(0, 6);
+
+      if (digitos.length <= 2) {
+        return digitos;
+      }
+
+      if (digitos.length <= 4) {
+        return digitos.replace(/(\d{2})(\d+)/, '$1:$2');
+      }
+
+      return digitos.replace(/(\d{2})(\d{2})(\d{1,2})/, '$1:$2:$3');
+    }
+
+    function validarFormatoCPF(valor) {
+      return /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(valor);
+    }
+
+    function validarFormatoTempo(valor) {
+      if (!/^\d{2}:\d{2}:\d{2}$/.test(valor)) {
+        return false;
+      }
+
+      const partes = valor.split(':');
+      const hh = Number(partes[0]);
+      const mm = Number(partes[1]);
+      const ss = Number(partes[2]);
+
+      if (Number.isNaN(hh) || Number.isNaN(mm) || Number.isNaN(ss)) {
+        return false;
+      }
+
+      return hh >= 0 && hh <= 99 && mm >= 0 && mm <= 59 && ss >= 0 && ss <= 59;
+    }
+
+    function mostrarMensagem(texto, sucesso) {
+      boxMensagem.textContent = texto;
+      boxMensagem.className = 'mensagem ' + (sucesso ? 'ok' : 'erro');
+    }
+
+    function limparMensagem() {
+      boxMensagem.textContent = '';
+      boxMensagem.className = 'mensagem';
+    }
+  </script>
+</body>
+</html>
