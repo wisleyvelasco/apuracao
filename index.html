@@ -337,7 +337,7 @@ function render(){
   if(!filtrados.length){tab.innerHTML='<div class="empty">Nenhuma dupla encontrada.</div>';return;}
   gruposPorCategoria(filtrados).forEach(g=>{
     const head=document.createElement('div');head.className='catHead';
-    head.innerHTML=`<div>${seguro(g.geralLabel)}</div><div>Categoria</div><div class="catTitle">${seguro(g.label)}</div><div>Tempo 01</div><div>Tempo 02</div><div>Dupla</div><div>Validade</div>`;
+    head.innerHTML=`<div>${seguro(g.geralLabel)}</div><div>Categ.</div><div class="catTitle">${seguro(g.label)}</div><div>Tempo 01</div><div>Tempo 02</div><div>Dupla</div><div>Validade</div>`;
     tab.appendChild(head);
     const linhas=[...g.items].sort((a,b)=>(a.segundos==null)-(b.segundos==null)||(a.segundos??Infinity)-(b.segundos??Infinity)||a.dupla.localeCompare(b.dupla));
     linhas.forEach(d=>{
