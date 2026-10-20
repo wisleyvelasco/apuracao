@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Goiás Ride Mata Feia - 25ª ed. | Apuração dos Tempos</title>
+  <title>Goiás Ride - GynPiri - 26ª ed. | Apuração dos Tempos</title>
   <style>
     :root{
       --azul:#244f93; --azul-escuro:#173a75; --azul-claro:#8ea8d7;
@@ -38,28 +38,48 @@
 
     @media(max-width:760px){.wrap{padding:0 4px 18px}header{grid-template-columns:1fr;min-height:unset}.logoBox{min-height:86px;border-right:0;border-bottom:1px solid #111}h1{font-size:28px}.sub{font-size:24px}.titleBox:after{right:8px;top:7px;font-size:10px;padding:4px 8px}.ticker{font-size:12px}.toolbar{grid-template-columns:1fr;position:static}.meta{text-align:left}.cards{grid-template-columns:repeat(2,1fr)}.card{padding:10px}.podiumPanel{border-radius:12px;padding:9px}.podiumGrid{grid-template-columns:1fr}.topHead,.catHead,.row{grid-template-columns:72px 56px minmax(128px,1fr) 76px;font-size:12px}.topHead{font-size:12px}.catHead{position:static;font-size:12px}.row{min-height:30px}.row div{padding:4px 4px}.tempo{font-size:11px}.nome{font-size:12px}}
     @media print{.toolbar,.cards,.ticker,footer{display:none}.wrap{max-width:none;padding:0}body{background:white}header{break-inside:avoid}.row{min-height:18px}.podiumPanel{box-shadow:none}}
+
+    /* Apuração por duplas — compatível com telas grandes e celulares */
+    .topHead,.catHead,.row{grid-template-columns:70px 66px minmax(220px,1.8fr) 100px 100px 104px 92px}
+    .topHead{font-size:12px}.catHead{font-size:12px}.row{min-height:35px;font-size:12px}
+    .duplaNome{font-weight:700;white-space:normal;overflow-wrap:anywhere}
+    .atletaTempo,.tempoOficial{text-align:right;font-variant-numeric:tabular-nums}
+    .validade{text-align:center;font-weight:700}
+    .validade.ok{color:#15803d;background:#dcfce7}.validade.penalizada{color:#b91c1c;background:#fee2e2}
+    .validade.incompleta{color:#92400e;background:#fef3c7}
+    .validade.semtempo{color:#64748b;background:transparent}
+    .row .validade{padding:8px 3px;align-self:stretch;display:flex;align-items:center;justify-content:center;gap:4px}
+    .topHead div,.catHead div{overflow-wrap:anywhere}
+    .tableWrap{overflow-x:auto}.topHead,.catHead,.row{min-width:930px}
+    .podiumRow{grid-template-columns:34px minmax(0,1fr) 76px}
+    @media(max-width:760px){
+      .topHead,.catHead,.row{grid-template-columns:47px 43px minmax(180px,1.9fr) 72px 72px 76px 64px;min-width:650px;font-size:11px}
+      .topHead,.catHead{font-size:10px}.row .validade{font-size:10px}
+      .topHead div,.catHead div,.row div{padding-left:3px;padding-right:3px}
+      .tableWrap:before{content:'↔ Deslize lateralmente para ver todos os tempos';display:block;text-align:center;font-size:11px;color:#64748b;padding:6px;background:#f8fafc}
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div class="logoBox"><img src="logo-evento.png" alt="Logo oficial do evento" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="logoHint" style="display:none">ESPAÇO DA<br>LOGO OFICIAL<br>DO EVENTO</div></div>
-    <div class="titleBox"><h1>Goiás Ride Mata Feia - 25ª ed.</h1><div class="sub">Apuração dos Tempos</div></div>
+    <div class="titleBox"><h1>Goiás Ride - GynPiri - 26ª ed.</h1><div class="sub">Apuração dos Tempos</div></div>
   </header>
-  <div class="ticker"><span>🏁 ÚLTIMA APURAÇÃO</span><span id="latestTicker" class="latest">Aguardando lançamento de tempos...</span></div>
+  <div class="ticker"><span>🏁 ÚLTIMA APURAÇÃO</span><span id="latestTicker" class="latest">Aguardando apuração das duplas...</span></div>
 
   <section class="toolbar" aria-label="Controles do painel">
-    <input id="busca" type="search" placeholder="Buscar atleta..." />
+    <input id="busca" type="search" placeholder="Buscar dupla ou integrante..." />
     <select id="categoria"><option value="">Todas as categorias</option></select>
     <button id="atualizar">Atualizar dados</button>
     <div class="meta"><span id="status">Carregando...</span><br><span id="last"></span></div>
   </section>
 
   <section class="cards" aria-label="Resumo da apuração">
-    <div class="card"><b id="total">0</b><span>Atletas</span></div>
-    <div class="card"><b id="apurados">0</b><span>Com tempo apurado</span></div>
-    <div class="card"><b id="pendentes">0</b><span>Pendentes</span></div>
-    <div class="card"><b id="melhor">-</b><span>Melhor tempo exibido</span></div>
+    <div class="card"><b id="total">0</b><span>Duplas inscritas</span></div>
+    <div class="card"><b id="apurados">0</b><span>Duplas classificadas</span></div>
+    <div class="card"><b id="pendentes">0</b><span>Pendentes / incompletas</span></div>
+    <div class="card"><b id="melhor">-</b><span>Melhor tempo oficial</span></div>
   </section>
 
   <section class="podiumPanel" aria-label="Top 3 por categoria">
@@ -68,10 +88,10 @@
   </section>
 
   <main class="tableWrap">
-    <div class="topHead"><div>GERAL</div><div>CAT.</div><div style="text-align:center">CATEGORIAS</div><div>TEMPOS</div></div>
+    <div class="topHead"><div>GERAL</div><div>CAT.</div><div style="text-align:center">DUPLAS</div><div>ATLETA 01</div><div>ATLETA 02</div><div>OFICIAL</div><div>VALIDADE</div></div>
     <div id="tabela"></div>
   </main>
-  <footer>Atualização automática da página a cada <b>30 segundos</b>. Classificação geral calculada por segmento/percurso.
+  <footer>Atualização automática dos dados, sem recarregar a página, a cada <b>30 segundos</b>. Classificação geral calculada por segmento/percurso.
   <!-- Versão v14: classificação geral por segmento/percurso (Geral Reduzido e Geral Completo), cabeçalho de categoria sem sobreposição e listagem completa por categoria. Para trocar a planilha, altere <b>CONFIG.sheetId</b> e <b>CONFIG.gid</b> no código. Para inserir a logo, salve a imagem como <b>logo-evento.png</b> na mesma pasta deste HTML. -->
   </footer>
 </div>
@@ -95,12 +115,12 @@
   gid = número depois de gid= na URL da aba.
 */
 const CONFIG = {
-  sheetId: '1cueWX4wr_kPS7ifCatQrcdiEceosVd4zUqFaoEp76m0',
-  gid: '1590796815',
+  sheetId: '1oN3D04qAZBS-eG1TQYLTwTQ9v_VRkWcxtfNpfjLbjMg',
+  gid: '1117498820',
   autoRefreshMs: 30000,
   sentinelSemTempo: '12:00:00',
   highlightMs: 9000,
-  storageKey: 'goiasRideTemposConhecidos_v25',
+  storageKey: 'goiasRideDuplasConhecidas_v26',
 
   // Aliases aceitos para as colunas da planilha.
   // Isto torna o painel mais tolerante a pequenas variações de cabeçalho:
@@ -114,23 +134,15 @@ const CONFIG = {
   // Se true, mostra no console do navegador as colunas e amostras recebidas.
   debug: true,
 
-  // Classificação geral por segmento/percurso.
-  // A coluna "Geral" passa a comparar somente atletas do mesmo grupo competitivo.
-  // Para futuras edições, basta incluir novas categorias no grupo correspondente
-  // ou criar novos grupos mantendo a mesma estrutura abaixo.
+  // Grupos competitivos: categorias não listadas entram no padrão (propulsão humana).
+  // Para uma futura edição com outros segmentos, acrescente grupos aqui.
   gruposGerais: [
-    {
-      key: 'REDUZIDO',
-      label: 'Geral Reduzido',
-      categorias: []
-    },
-    {
-      key: 'E-BIKE',
-      label: 'Geral Completo',
-      categorias: ['FORÇA LIVRE', 'E BIKE-45']
-    }
+    {key: 'E-BIKE', label: 'Geral E-Bike', categorias: ['E-BIKE']}
   ],
-  grupoGeralPadrao: { key: 'OUTROS', label: 'Geral Percurso' }
+  grupoGeralPadrao: { key: 'HUMANA', label: 'Geral Propulsão Humana' },
+  penalidadeApartirSeg: 120, // >= 2 minutos
+  penalidadeSeg: 300,       // +5 minutos
+  debug: true
 };
 let dados = [];
 let newlyTimedKeys = new Set();
@@ -178,7 +190,10 @@ function validarEstruturaPlanilha(raw){
   }
   const faltantes = [];
   if(!temAlgumaColuna(raw, CONFIG.colunas.categoria)) faltantes.push('categoria');
-  if(!temAlgumaColuna(raw, CONFIG.colunas.atleta)) faltantes.push('atleta/nome');
+  if(!temAlgumaColuna(raw, ['inscricao'])) faltantes.push('inscricao');
+  if(!temAlgumaColuna(raw, ['dupla'])) faltantes.push('dupla');
+  if(!temAlgumaColuna(raw, ['atleta'])) faltantes.push('atleta (Atleta 01 / Atleta 02)');
+  if(!temAlgumaColuna(raw, CONFIG.colunas.tempo)) faltantes.push('Tempo Seg');
   if(faltantes.length){
     const cols = colunasRecebidas(raw).join(' | ') || '(sem cabeçalhos identificados)';
     throw new Error('Planilha carregada, mas não encontrei as colunas obrigatórias: ' + faltantes.join(', ') + '. Colunas recebidas: ' + cols);
@@ -212,181 +227,127 @@ function secs(t){
   return h*3600+mi*60+s;
 }
 function categoryKey(c){return norm(c).replace(/[^A-Z0-9]/g,'')}
-function keyOf(a){return `${a.catKey || categoryKey(a.categoria)}|${norm(a.atleta)}`}
+function keyOf(d){return String(d.inscricao)}
 function grupoGeralDaCategoria(categoria){
-  const catNorm = norm(categoria);
-  const grupo = CONFIG.gruposGerais.find(g =>
-    g.categorias.some(cat => norm(cat) === catNorm)
-  );
-  return grupo || CONFIG.grupoGeralPadrao;
+  const ck=categoryKey(categoria);
+  return CONFIG.gruposGerais.find(g=>g.categorias.some(c=>categoryKey(c)===ck)) || CONFIG.grupoGeralPadrao;
 }
-function limparTexto(s){
-  return String(s ?? '')
-    .replace(/\u00a0/g, ' ')
-    .replace(/[\u200B-\u200D\uFEFF]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+function limparTexto(s){return String(s ?? '').replace(/\u00a0/g,' ').replace(/[\u200B-\u200D\uFEFF]/g,'').replace(/\s+/g,' ').trim()}
+function seguro(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function preparar(raw){
-  const lidos = raw
-    .map((r, idx) => {
-      const categoria = limparTexto(getCampo(r, CONFIG.colunas.categoria)).toUpperCase();
-      const atleta = limparTexto(getCampo(r, CONFIG.colunas.atleta)).toUpperCase();
-      const tempoRaw = getCampo(r, CONFIG.colunas.tempo);
-      const tempo = limparTempo(tempoRaw);
-      const segundos = secs(tempoRaw);
-      const catKey = categoryKey(categoria);
-      const grupoGeral = grupoGeralDaCategoria(categoria);
-      return {
-        categoria,
-        catKey,
-        atleta,
-        tempo,
-        segundos,
-        rawIndex: idx,
-        grupoGeralKey: grupoGeral.key,
-        grupoGeralLabel: grupoGeral.label
-      };
-    })
-    .filter(a => a.categoria && a.atleta && a.catKey);
-
-  // Consolidação defensiva por CATEGORIA NORMALIZADA + ATLETA.
-  const mapa = new Map();
-  lidos.forEach(a => {
-    const k = `${a.catKey}|${norm(a.atleta)}`;
-    const atual = mapa.get(k);
-    if(!atual){ mapa.set(k, a); return; }
-    const atualTemTempo = atual.segundos != null;
-    const novoTemTempo = a.segundos != null;
-    if(novoTemTempo && !atualTemTempo) mapa.set(k, a);
-    else if(novoTemTempo && atualTemTempo && a.segundos < atual.segundos) mapa.set(k, a);
+  const mapa=new Map();
+  raw.forEach((r,idx)=>{
+    const inscricao=limparTexto(getCampo(r,['inscricao','inscrição']));
+    const categoria=limparTexto(getCampo(r,CONFIG.colunas.categoria)).toUpperCase();
+    const dupla=limparTexto(getCampo(r,['dupla'])).toUpperCase();
+    const rotulo=limparTexto(getCampo(r,['atleta'])).toUpperCase();
+    const nome=limparTexto(getCampo(r,['nome','nome completo'])).toUpperCase();
+    const cpf=limparTexto(getCampo(r,['cpf']));
+    const segundos=secs(getCampo(r,CONFIG.colunas.tempo));
+    if(!inscricao || !categoria || !rotulo) return;
+    if(!mapa.has(inscricao)) mapa.set(inscricao,{inscricao,categoria,catKey:categoryKey(categoria),dupla:dupla||`INSCRIÇÃO ${inscricao}`,atletas:{},inconsistencias:[]});
+    const d=mapa.get(inscricao);
+    if(d.catKey!==categoryKey(categoria)) d.inconsistencias.push('Categoria divergente');
+    const num=/\b0?([12])\b/.exec(rotulo);
+    if(!num){d.inconsistencias.push(`Identificação não reconhecida: ${rotulo}`);return;}
+    const slot=Number(num[1]);
+    if(d.atletas[slot]){
+      // Não tratar repetição de mesmo nome/CPF como segundo atleta.
+      if(d.atletas[slot].cpf!==cpf) d.inconsistencias.push(`Dois registros distintos como Atleta 0${slot}`);
+      if(d.atletas[slot].segundos==null && segundos!=null) d.atletas[slot]={nome,cpf,segundos};
+    }else d.atletas[slot]={nome,cpf,segundos};
   });
-
-  const arr = [...mapa.values()];
-  const timed = arr
-    .filter(a => a.segundos != null)
-    .sort((a,b) =>
-      a.grupoGeralKey.localeCompare(b.grupoGeralKey) ||
-      a.segundos - b.segundos ||
-      a.atleta.localeCompare(b.atleta)
-    );
-
-  // Classificação geral por segmento/percurso, e não entre todos os atletas.
-  const porGrupoGeral = {};
-  timed.forEach(a => { (porGrupoGeral[a.grupoGeralKey] ??= []).push(a); });
-  Object.values(porGrupoGeral).forEach(list =>
-    list
-      .sort((a,b) => a.segundos - b.segundos || a.atleta.localeCompare(b.atleta))
-      .forEach((a,i) => a.geral = i + 1)
-  );
-
-  const porCat = {};
-  timed.forEach(a => { (porCat[a.catKey] ??= []).push(a); });
-  Object.values(porCat).forEach(list => list.forEach((a,i) => a.catPos = i + 1));
-
-  return arr.sort((a,b) =>
-    a.catKey.localeCompare(b.catKey) ||
-    (a.segundos == null) - (b.segundos == null) ||
-    (a.segundos ?? 999999999) - (b.segundos ?? 999999999) ||
-    a.atleta.localeCompare(b.atleta)
-  );
+  const arr=[...mapa.values()].map(d=>{
+    const a=d.atletas[1],b=d.atletas[2];
+    const ta=a?.segundos??null,tb=b?.segundos??null;
+    const completo=!!a && !!b && ta!=null && tb!=null && !d.inconsistencias.length;
+    const diferenca=completo?Math.abs(ta-tb):null;
+    const penalizada=completo && diferenca>=CONFIG.penalidadeApartirSeg;
+    const segundos=completo?Math.max(ta,tb)+(penalizada?CONFIG.penalidadeSeg:0):null;
+    let validade='semtempo';
+    if(d.inconsistencias.length || !a || !b) validade='incompleta';
+    else if(ta!=null && tb!=null) validade=penalizada?'penalizada':'ok';
+    else if(ta!=null || tb!=null) validade='incompleta';
+    const grupo=grupoGeralDaCategoria(d.categoria);
+    return {...d,segundos,diferenca,penalizada,validade,grupoGeralKey:grupo.key,grupoGeralLabel:grupo.label};
+  });
+  const grupos=new Map(),cats=new Map();
+  arr.filter(d=>d.segundos!=null).forEach(d=>{
+    if(!grupos.has(d.grupoGeralKey)) grupos.set(d.grupoGeralKey,[]);
+    grupos.get(d.grupoGeralKey).push(d);
+    if(!cats.has(d.catKey))cats.set(d.catKey,[]);
+    cats.get(d.catKey).push(d);
+  });
+  const ordenar=(a,b)=>a.segundos-b.segundos || a.dupla.localeCompare(b.dupla);
+  grupos.forEach(v=>v.sort(ordenar).forEach((d,i)=>d.geral=i+1));
+  cats.forEach(v=>v.sort(ordenar).forEach((d,i)=>d.catPos=i+1));
+  return arr.sort((a,b)=>a.categoria.localeCompare(b.categoria) || (a.segundos==null)-(b.segundos==null) || (a.segundos??Infinity)-(b.segundos??Infinity) || a.dupla.localeCompare(b.dupla));
 }
 function detectarNovosTempos(novos){
-  const atuais = new Map(novos.filter(a=>a.segundos!=null).map(a=>[keyOf(a), a]));
-  let conhecidos = [];
-  try{ conhecidos = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '[]'); }catch(e){}
-  const prev = new Set(conhecidos);
-  newlyTimedKeys = new Set([...atuais.keys()].filter(k=>!prev.has(k)));
+  const atuais=new Map(novos.filter(d=>d.segundos!=null).map(d=>[keyOf(d),d]));
+  let conhecidos={};
+  try{conhecidos=JSON.parse(localStorage.getItem(CONFIG.storageKey)||'{}')}catch(e){}
+  // Armazenar tempos oficiais permite destacar novas classificações ou correções.
+  newlyTimedKeys=new Set([...atuais].filter(([k,d])=>conhecidos[k]!==d.segundos).map(([k])=>k));
   if(newlyTimedKeys.size){
-    lastNewAthlete = [...newlyTimedKeys].map(k=>atuais.get(k)).sort((a,b)=>(a.geral??9999)-(b.geral??9999))[0];
-    setTimeout(()=>{newlyTimedKeys.clear(); render();}, CONFIG.highlightMs);
+    lastNewAthlete=[...newlyTimedKeys].map(k=>atuais.get(k)).sort((a,b)=>(a.geral??Infinity)-(b.geral??Infinity))[0];
+    setTimeout(()=>{newlyTimedKeys.clear();render()},CONFIG.highlightMs);
   }
-  localStorage.setItem(CONFIG.storageKey, JSON.stringify([...atuais.keys()]));
+  try{localStorage.setItem(CONFIG.storageKey,JSON.stringify(Object.fromEntries([...atuais].map(([k,d])=>[k,d.segundos]))))}catch(e){}
 }
 function gruposPorCategoria(base){
-  const mapa = new Map();
-  base.forEach(d => {
-    const key = d.catKey || categoryKey(d.categoria);
-    if(!mapa.has(key)) mapa.set(key, { key, label: d.categoria, geralLabel: d.grupoGeralLabel || 'Geral Percurso', items: [] });
-    mapa.get(key).items.push(d);
+  const mapa=new Map();base.forEach(d=>{
+    if(!mapa.has(d.catKey))mapa.set(d.catKey,{key:d.catKey,label:d.categoria,geralLabel:d.grupoGeralLabel,items:[]});
+    mapa.get(d.catKey).items.push(d);
   });
   return [...mapa.values()].sort((a,b)=>a.label.localeCompare(b.label));
 }
 function popularCategorias(){
-  const sel=$('categoria'), atual=sel.value;
+  const sel=$('categoria'),atual=sel.value;
   sel.innerHTML='<option value="">Todas as categorias</option>';
-  gruposPorCategoria(dados).forEach(g=>{
-    const o=document.createElement('option');
-    o.value=g.key;
-    o.textContent=g.label;
-    sel.appendChild(o);
-  });
-  if([...sel.options].some(o=>o.value===atual)) sel.value=atual;
+  gruposPorCategoria(dados).forEach(g=>{const o=document.createElement('option');o.value=g.key;o.textContent=g.label;sel.appendChild(o)});
+  if([...sel.options].some(o=>o.value===atual))sel.value=atual;
 }
-function renderPodium(viewAll){
+function renderPodium(all){
   const catFiltro=$('categoria').value;
-  const grupos = gruposPorCategoria(catFiltro ? viewAll.filter(d=>d.catKey===catFiltro) : viewAll);
-  $('podiumHint').textContent = catFiltro ? 'Categoria filtrada em destaque.' : 'Três melhores colocados já apurados.';
-  const box=$('podium'); box.innerHTML='';
+  const grupos=gruposPorCategoria(catFiltro?all.filter(d=>d.catKey===catFiltro):all);
+  $('podiumHint').textContent=catFiltro?'Categoria filtrada em destaque.':'Pódios parciais das duplas já classificadas.';
+  const box=$('podium');box.replaceChildren();
   const medals=['🥇','🥈','🥉'];
   grupos.forEach(g=>{
-    const top = g.items.filter(d=>d.segundos!=null).sort((a,b)=>a.segundos-b.segundos || a.atleta.localeCompare(b.atleta)).slice(0,3);
-    const card=document.createElement('article'); card.className='podiumCat';
-    card.innerHTML = `<h3>${g.label}</h3>` + (top.length ? top.map((d,i)=>`<div class="podiumRow"><div class="medal">${medals[i]}</div><div class="ath" title="${d.atleta}">${d.atleta}</div><div class="tm">${fmt(d.segundos)}</div></div>`).join('') : '<div class="podiumEmpty">Sem tempos apurados ainda.</div>');
+    const top=g.items.filter(d=>d.segundos!=null).sort((a,b)=>a.segundos-b.segundos).slice(0,3);
+    const card=document.createElement('article');card.className='podiumCat';
+    card.innerHTML=`<h3>${seguro(g.label)}</h3>`+(top.length?top.map((d,i)=>`<div class="podiumRow"><div class="medal">${medals[i]}</div><div class="ath" title="${seguro(d.dupla)}">${seguro(d.dupla)}${d.penalizada?' ⚠️':''}</div><div class="tm">${fmt(d.segundos)}</div></div>`).join(''):'<div class="podiumEmpty">Sem duplas classificadas ainda.</div>');
     box.appendChild(card);
   });
 }
 function render(){
-  const busca = norm($('busca').value);
-  const catFiltro = $('categoria').value;
-
-  const filtrados = dados.filter(d =>
-    (!catFiltro || d.catKey === catFiltro) &&
-    (!busca || norm(d.atleta).includes(busca))
-  );
-
-  const tab = $('tabela');
-  tab.innerHTML = '';
-
-  const total = dados.length;
-  const ap = dados.filter(d => d.segundos != null).length;
-  const pend = total - ap;
-  const melhor = dados.filter(d => d.segundos != null).sort((a,b) => a.segundos - b.segundos)[0];
-
-  $('total').textContent = total;
-  $('apurados').textContent = ap;
-  $('pendentes').textContent = pend;
-  $('melhor').textContent = melhor ? fmt(melhor.segundos) : '-';
-
-  if(lastNewAthlete) $('latestTicker').textContent = `${lastNewAthlete.atleta} • ${lastNewAthlete.categoria} • ${fmt(lastNewAthlete.segundos)}`;
-  else if(melhor) $('latestTicker').textContent = `Melhor tempo exibido: ${melhor.atleta} • ${fmt(melhor.segundos)}`;
-
+  const busca=norm($('busca').value),catFiltro=$('categoria').value;
+  const filtrados=dados.filter(d=>(!catFiltro || d.catKey===catFiltro) && (!busca || norm(`${d.dupla} ${d.inscricao} ${d.atletas[1]?.nome||''} ${d.atletas[2]?.nome||''}`).includes(busca)));
+  const tab=$('tabela');tab.replaceChildren();
+  const classificados=dados.filter(d=>d.segundos!=null);
+  $('total').textContent=dados.length;
+  $('apurados').textContent=classificados.length;
+  $('pendentes').textContent=dados.length-classificados.length;
+  const melhor=[...classificados].sort((a,b)=>a.segundos-b.segundos)[0];
+  $('melhor').textContent=melhor?fmt(melhor.segundos):'-';
+  if(lastNewAthlete)$('latestTicker').textContent=`${lastNewAthlete.dupla} • ${lastNewAthlete.categoria} • ${fmt(lastNewAthlete.segundos)}${lastNewAthlete.penalizada?' (+5min)':''}`;
+  else if(melhor)$('latestTicker').textContent=`Melhor tempo oficial: ${melhor.dupla} • ${fmt(melhor.segundos)}`;
   renderPodium(dados);
-
-  if(!filtrados.length){
-    tab.innerHTML = '<div class="empty">Nenhum atleta encontrado.</div>';
-    return;
-  }
-
-  gruposPorCategoria(filtrados).forEach(g => {
-    const head = document.createElement('div');
-    head.className = 'catHead';
-    head.innerHTML = '<div>'+g.geralLabel+'</div><div>Categoria</div><div class="catTitle">'+g.label+'</div><div>Tempo</div>';
+  if(!filtrados.length){tab.innerHTML='<div class="empty">Nenhuma dupla encontrada.</div>';return;}
+  gruposPorCategoria(filtrados).forEach(g=>{
+    const head=document.createElement('div');head.className='catHead';
+    head.innerHTML=`<div>${seguro(g.geralLabel)}</div><div>Categoria</div><div class="catTitle">${seguro(g.label)}</div><div>Tempo 01</div><div>Tempo 02</div><div>Dupla</div><div>Validade</div>`;
     tab.appendChild(head);
-
-    const linhas = [...g.items].sort((a,b) =>
-      (a.segundos == null) - (b.segundos == null) ||
-      (a.segundos ?? 999999999) - (b.segundos ?? 999999999) ||
-      a.atleta.localeCompare(b.atleta)
-    );
-
-    linhas.forEach(d => {
-      const r = document.createElement('div');
-      const isNew = newlyTimedKeys.has(keyOf(d));
-      const rankClass = d.catPos === 1 ? ' rank1' : d.catPos === 2 ? ' rank2' : d.catPos === 3 ? ' rank3' : '';
-      const medal = d.catPos === 1 ? '🥇' : d.catPos === 2 ? '🥈' : d.catPos === 3 ? '🥉' : '';
-      r.className = 'row ' + (d.segundos != null ? 'timed' : 'untimed') + rankClass + (isNew ? ' newEntry' : '');
-      r.innerHTML = `<div class="pos">${d.geral ?? '-'}</div><div class="catPos">${d.catPos ?? '-'}</div><div class="nome" title="${d.atleta}">${medal ? `<span class="medalInline">${medal}</span>` : ''}${d.atleta}</div><div class="tempo">${d.segundos != null ? fmt(d.segundos) : 'SEM TEMPO'}</div>`;
+    const linhas=[...g.items].sort((a,b)=>(a.segundos==null)-(b.segundos==null)||(a.segundos??Infinity)-(b.segundos??Infinity)||a.dupla.localeCompare(b.dupla));
+    linhas.forEach(d=>{
+      const r=document.createElement('div');
+      const medal=['🥇','🥈','🥉'][d.catPos-1]||'';
+      const rankClass=d.catPos<=3?` rank${d.catPos}`:'';
+      r.className='row '+(d.segundos!=null?'timed':'untimed')+rankClass+(newlyTimedKeys.has(keyOf(d))?' newEntry':'');
+      const desc={ok:'Regular',penalizada:'Penalizada (+5min)',incompleta:'Incompleta',semtempo:'Sem apuração'};
+      const simbolo={ok:'✅',penalizada:'🔴',incompleta:'🟡',semtempo:'—'};
+      r.innerHTML=`<div class="pos">${d.geral??'-'}</div><div class="catPos">${d.catPos??'-'}</div><div class="duplaNome" title="${seguro((d.atletas[1]?.nome||'')+' / '+(d.atletas[2]?.nome||''))}">${medal?`<span class="medalInline">${medal}</span>`:''}${seguro(d.dupla)}</div><div class="atletaTempo" title="${seguro(d.atletas[1]?.nome||'Atleta 01 ausente')}">${d.atletas[1]?.segundos!=null?fmt(d.atletas[1].segundos):'-'}</div><div class="atletaTempo" title="${seguro(d.atletas[2]?.nome||'Atleta 02 ausente')}">${d.atletas[2]?.segundos!=null?fmt(d.atletas[2].segundos):'-'}</div><div class="tempoOficial">${d.segundos!=null?fmt(d.segundos):'-'}</div><div class="validade ${d.validade}" title="${seguro(d.inconsistencias.join('; ')||desc[d.validade])}">${simbolo[d.validade]} <span>${d.validade==='penalizada'?'+5min':d.validade==='ok'?'OK':d.validade==='incompleta'?'Parcial':'—'}</span></div>`;
       tab.appendChild(r);
     });
   });
@@ -473,7 +434,7 @@ async function carregar(){
     const novos=preparar(raw);
     if(!novos.length){
       const cols = colunasRecebidas(raw).join(' | ') || '(sem cabeçalhos identificados)';
-      throw new Error('A planilha foi carregada, mas nenhum atleta válido foi montado. Confira se as linhas têm categoria e atleta preenchidos. Colunas recebidas: ' + cols);
+      throw new Error('A planilha foi carregada, mas nenhuma dupla válida foi montada. Confira se as linhas têm inscricao, categoria, dupla e atleta preenchidos. Colunas recebidas: ' + cols);
     }
     detectarNovosTempos(novos);
     dados=novos;
